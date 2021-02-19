@@ -1,0 +1,37 @@
+
+----- LEVEL03 -----
+
+
+1)	first impressions :
+		-theres's a file in the home directory this time.
+		-file is a binary
+		-disassembled the main in gdb
+			=> string moved on stack before system call is "/usr/bin/env echo Exploit me"
+		-saw execute permissions have an "s" instead of "x", have to search on that.
+
+4)	Searched for weaknesses in the script :
+		-Syscall is made on "/usr/bin/env echo Exploit me"
+			=> searched about environment variable exploit
+				-saw that suid changed only who executed the binary, not the env variables.
+				-knew I was on the right track
+
+5)	searched a way to replace current echo binary in use by my binary
+		- wanted to create it in level03 home. Could'nt.
+		- searched for writable directory : find / -writable -print 2>/dev/null
+		- found /tmp
+		- tmp was not readable, checked if a non readable directory was executable
+			=> YES IT IS
+
+6)	My goal is to replace echo by getflag.
+		- wrote a C code to execute getflag
+		- wrote a bash script to perform all remaining steps
+			=> compile c				=>			"gcc main.c -o exploit"
+			=> move binary to tmp		=>			"mv exploit /tmp/echo"
+			=> update PATH				=>			"export PATH="/tmp/:$PATH"
+			=> execute binary level03	=>			"echo `~/level03`"
+
+7)	Copy with scp
+		-main.c to /var/lock
+		-script.sh to /tmp/
+
+8)	Run /tmp/script.sh from /var/lock

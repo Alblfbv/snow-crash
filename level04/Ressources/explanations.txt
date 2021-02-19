@@ -1,0 +1,28 @@
+
+----- LEVEL04 -----
+
+
+1)	first impressions :
+		-file in home directory
+		-pl extension => perl script
+		-cat script shows localhost
+			=> netstat -tulpn : something is listening on port 4747
+
+2)	Found out apache2 server running.
+		- listening on port 4747
+		- ExecCGI
+		- Executes perl script that is in home directory
+		- Simple curl does nothing special
+
+3)	Perl script analysis
+		- use CGI qw{param} and param("arg")
+			=> found out param is a function that will retrieve the value of URL parameter "arg"
+		- so script calls subroutine x with value of URL parameter x
+		- subroutine x does a print of result of shell invoke of "echo $y"
+			=> $y is the value of first subroutine argument, so x URL value.
+	
+4)	Possible exploit is to insert shell command inside the backticks with URL parameter
+		
+5)	with curl :
+		- after several attempts, got this one working
+			=> curl -Gv '127.0.0.1:4747' --data-urlencode "x=;getflag"

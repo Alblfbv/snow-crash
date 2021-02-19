@@ -1,0 +1,40 @@
+
+----- LEVEL10 -----
+
+
+1)	first impressions :
+		-strings :
+			-connecting to %s:6969 => port 6969 ?
+			-"Connected" / "Sending File" => Looks like some network vocabulary
+
+		-nm -u
+			-access		: is current program authorized to access file
+			-connect	: connects socket "socketfd" to address "serv_addr"
+			-fflush		: dunno
+			-htons		: converts unsigned short "hostshort" from host byte order to network byte
+				=> What is hostbyte order / networkbyte order
+			-inet		: converts internet host cp from IPv4 human readable to binary
+				=>( XXX.XX.XXX.XX ) => 000110110100011111011101001
+			-socket		: creates a communication point and returns a FD
+				=> socket(2, 1, 0) == socket(AF_INET, SOCK_STREAM, 0) == TCP SOCKET
+
+2)	Program workflow
+		a) checks args nb
+		b) checks can access file argv1 on read permission (0x4 for mode)
+			=> ruid, not suid
+		c) opens TCP socket
+		d) gets binary ip address
+		e) convert port number in network byte number (big endian)
+		f) tries to connect with addr + socket
+
+3)	How to bypass "access" function ?
+
+4)	I searched if port 6969 was listening, and it's not.
+		-I opened a connection with netcat on port 6969 (nc -lk 6969)
+		-with a random file, it works and displays content of the file on the server side.
+
+5)	Searched google for some information about access function exploits and found the TOCTOU issue, which is part of race issues.
+		-wrote a script to create file -> delete file -> create link -> unlink link in a loop.
+		-then executed level10 program in a loop aswell.
+			=> It worked
+				=> woupa2yuojeeaaed06riuj63c

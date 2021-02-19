@@ -1,0 +1,40 @@
+
+----- LEVEL12 -----
+
+
+1)	first impressions :
+		-perl script
+		-netstat -tulpn
+			=> 4646 is listening already
+
+2)	script analysis
+		-n is only here to say if t was successful or not
+		-first regex is uppercase filter
+			=> Command injection will be complicated because commands are case sensitive ?
+		-second regex deletes all whitespaces and following characters.
+		-as in level 11, the program in itself will not give us the flag, (returns "." or ". .")
+			=> seems like we have to find a week spot for injection.
+				=> line with egrep has backticks
+
+3)	exploit must be first URL parameter string.
+		=> without whitespaces
+		=> which will work if written fully uppercase
+
+4)	how to lowercase an uppercase command ? 
+		=> https://www.shellscript.sh/tips/case/
+
+	=> Solution 1) "x=\"</;EXPLOIT=\"/tmp/exploit.sh\";\${EXPLOIT,,};#"
+		a) end egrep avec "</; => failure bcs directory
+		b) declare shell variable EXPLOIT=/TMP/EXPLOIT.SH
+		c) eval this variable in lowercase with ${VAR,,}
+			=> perl uses sh, the lowercase eval syntax only works with bash :'(
+
+	=> Solution 2) "x=\"</;/*/EXPLOIT.SH;#"
+		a) same as 1)a)
+		b) will look for a script named EXPLOIT.SH in all subdirectories of root
+			=> Much easier that solution1 1 :')
+
+5)	scripts overview :
+		-EXPLOIT.SH script calls getflag and outputs the result in /tmp/exploit.txt 
+		-curl.sh script executes curl with encoded url parameters.
+		-perl_test.pl script helped me to observe locally the behavior of the executable rather than read logs in /var/log/apache2/{error.log / other_vhost_access.log}

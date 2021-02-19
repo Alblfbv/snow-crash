@@ -1,0 +1,25 @@
+
+----- LEVEL07 -----
+
+
+1)	first impressions :
+		-binary file in the home
+		-find with name/user flag07/user07 don't give anything
+			=> All the exploit must be with the binary somehow.
+
+2)	disassembled the binary
+		-main : call to getenv + asprintf + system (write ?)
+			=> seems like I have to tweak an environment variable to have the getflag as program is suid
+
+4)	in the assembly, with peda.
+		-breakpoints around getenv
+			-getenv :
+				-x/s 0x8048680 => Gives me the value of string moved on stack
+					=> "LOGNAME"
+			-I know that the environment variable used is LOGNAME
+			-"/bin/echo %s" is hard-written, not echo in path.
+				=> cannot change for my own echo binary
+
+5)	I have to change the string in LOGNAME so that echo executes it on print ?
+
+6)	export LOGNAME=\`getflag\`

@@ -1,0 +1,31 @@
+
+----- LEVEL05 -----
+
+
+1)	first impressions :
+		-nothing in home directory.
+		-tried to find usefull files like in level00 and level01
+			=> find / -user flag05 2>/dev/null
+			=> found a file "openarenaserver" in /usr/sbin/
+
+2)	openarenaserver file :
+		a) bash script that looks for files in /opt/openarenaserver/
+		b) will execute every executable found in this directory ?
+		c) removes the file
+		d) has acl set,, but getfacl does not show anything important imo.
+		=> I don't have permissions to execute it.
+		=> even if I could execute it, the binary has no setuid, called binaries won't be executed as flag05
+
+3)	A bit blocked at this point, did some more filesearches
+		- find / -user level05 2>/dev/null
+		- find / -name flag05 2>/dev/null
+		- find / -name level05 2>/dev/null
+			=> /var/mail/level05
+				cat => */2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05
+
+4)	I understood that this is a mail from root indicating to level05 that there is a root cron job executing this.
+		=> The command is executed as flag05
+		=> I must write a script, that will be executed once between now and in two minuts maximum through the bash script in /usr/sbin
+	
+5)	script.sh => getflag > /var/lock/flag
+		=> It worked, got the flag

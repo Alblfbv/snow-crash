@@ -1,0 +1,46 @@
+
+----- LEVEL06 -----
+
+
+1)  first impressions :
+    	-suid set on the executable
+    	-the executable calls the php (or is the php in a compiled form, if that is even possible)
+    	-copied locally and formatted the php file so that it's clearer
+        	=> Some regex to analyze.
+        	=> Seems like giving good argv 1 and 2 will output the flag.
+
+2)  php file analyse
+        -preg_replace(regex, replacement string, search string);
+            => Replace every occurence of regex
+        -Inside function x, we open file (argv[1]).
+            -What is this file ?
+            -What is $z parameter for ?
+        -When is y function used ?
+
+3)  Regex analyse
+    function x :
+        a) replace every occurence of [x .*] found in the file by "y(\\2)" ?
+            => Checked the regex deeply, /e modifier is very important
+				=> /e makes the replacement string executed as php code
+            	=> y function will be called with whatever was in the (.*) as argument inside a string
+        b) [ replaced by (
+        c) ] replaced by )
+
+    function y :
+        a) replace "." by " x "
+        b) rplace "@" by " y"
+
+4)	my goal :
+    	- inject some code on :
+        	-y call ?
+        	-final print ?
+
+5)	after 3 hours of failed attemps with multiple syntax :
+		some failures :
+			- [x shell_exec("getflag")]
+			- [x " . shell_exec("getflag") . "]
+			- [x ${shell_exec("getflag")}]
+			- shell_exec([x "getflag"])
+
+		Atleast one that works :
+			-[x ${`getflag`}]

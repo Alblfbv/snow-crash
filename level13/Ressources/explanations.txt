@@ -1,0 +1,27 @@
+
+----- LEVEL13 -----
+
+
+1)	first impressions :
+		-executable inside home directory
+		-the binary wants a given uid to start the program (4242)
+			=> id -u level13 == 2013
+			=> id -u flag13 == 3013
+		-cat /etc/passwd : no users with this uid.
+			=> Check the function that gives uid to the program
+
+2)	exec flow :
+		-if uid == 4242, jmp to +63
+		-else : print "UID 2013 started us but we we expect 4242"
+		main <+63> => call ft_des with this string : "boe]!ai0FB@.:|L6l@A?>qJ}I"
+			=> My guess is :
+				-it's the token or flag13 password encrypted
+				-ft_des will decrypt it.
+
+3)	As the string is already inside the executable, my guess is we do not need suid.
+		=> Thus, executing the binary inside gdb and tweaking values at runtime should work
+		=> I changed eax value to be 4242 before the jmp check (modified return value of getuid)
+		=> got inside function ft_des.
+		=> gdb finish to step out of ft_des
+		=> "2A31L79asukciNyi8uppkEuSx" in eax
+			it's level14 password, so the flag !!

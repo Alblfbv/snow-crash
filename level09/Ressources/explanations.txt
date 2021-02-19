@@ -1,0 +1,59 @@
+
+----- LEVEL09 -----
+
+
+1)	first impressions :
+		-binary file + token in home directory, as for level08
+		-./level09 => "You need to provide only one arg"
+		-nm -u gives :
+			-ptrace, getenv, fwrite, fputc, open, putchar, puts
+				=> Some env variable are used
+				=> What is ptrace ?
+				=> some writing to a file ?
+		-only one arg
+			=> Output so far is, given string argv1 :
+				"char1 + 0 . char2 + 1 . char3 + 2 ..."
+
+
+2)	analyzing executable workflow :
+		-ptrace + test + jns
+			=> On success, ptrace returns positive value. If other request 0, if failure -1 and errno
+			=> test sets sign flag to 1 if result is negative
+			=> jump not sign == if SF 0 ==> JUMP IF RESULT IS POSITIVE
+		
+			IF PTRACE SUCCEEDS, PROGRAM CONTINUES.
+			If it fails, should print 
+			<+90> => "You should not reverse this"
+			When ran with GDB, it'll always fail.
+			So we cannot run the programm with GDB.
+
+		<+121> => getenv
+			=> x/s 0x8048b8c == "LD_PRELOAD"
+			What is this env variable ?
+			=> LD_PRELOAD specifies which shared libraries will be loaded with the program
+		If not found, jumps to <+180>
+		If found, program stops.
+		We need not to load external library ?PTRACE_TRACEME
+
+		<+423> => <+506> : print char + 1 etc
+		<+534> => <+574> : print "Only one arg"
+
+3)	readelf -h level09
+		=> type EXEC (not DYN)
+		but ldd level09
+			=> output libc as being dynamically linked.
+	
+4)	when using strace, we see that ptrace returns -1, and program exits
+		=> Flag PTRACE_TRACEME is here to prevent the usage of GDB.
+
+5)	Our mission here is to load an external library to bypass all the controls of the program ?
+		=> Overloaded PTRACE
+		=> Overloaded getenv
+		=> Overloaded open
+
+6)	Just realized that token was readable.
+		=> lot of non printable characters
+		intuition is that content of token is the original password already changed with level09 exec.
+			=> Create a program that will do the opposite of level09.
+
+7)	password for flag09 : f3iji1ju5yuevaus41q1afiuq

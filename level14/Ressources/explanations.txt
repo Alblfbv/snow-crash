@@ -1,0 +1,26 @@
+
+----- LEVEL14 -----
+
+
+1)	first impressions :
+		-no file in home folder
+
+2)	find no files
+		-find / -name level14 2>/dev/null
+		-find / -name flag14 2>/dev/null
+		-find / -user level14 2>/dev/null
+		-find / -user flag14 2>/dev/null
+		-find / -perm /4000 2>/dev/null
+
+3)	netstat -tulnp not showing any listening
+
+4)	check on the school slack, had the info it had something to do with getflag binary.
+
+5)	Did the same as last exercice.
+		Disassed the binary, saw that the tokens were all harcoded inside the binary.
+		Changed some eax values along the way to trick firewall functions.
+			-main+72 : ptrace return value changed from -1 to 0
+			-main+360 : esp+16 changed to 0x1
+			-main+391 : eax to 1
+			-main+452 : eax to 0xbc6 (3014, uid of flag14)
+		got the flag 7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ

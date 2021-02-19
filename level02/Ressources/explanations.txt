@@ -1,0 +1,18 @@
+
+----- LEVEL02 -----
+
+
+1)	first impressions :
+		-pcap file, I need a traffic analyzer to read it.
+
+2)	installed tshark and wireshark
+		-copied the file locally with scp
+
+3)	used tshark with -V option to see the packages details.
+		=> Not very readable but with a less, found a "Data" section.
+			=> "tshark -V -r level02.pcap | grep -B 2 -A 2 Data
+				=> found a "...Password:" packet followed by multiple 1 byte lines looking like password parts.
+			=> "tshark -V -r level02.pcap | grep ^00"
+
+5)	took some time to figure out that the 7f hex value was ASCII delete character
+6)	found that the password was ft_waNDReL0L

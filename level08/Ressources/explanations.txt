@@ -1,0 +1,30 @@
+
+----- LEVEL08 -----
+
+
+1)	first impressions :
+		-there are both an executable and a token file in the home directory.
+		-binary is suid
+		-token can be read only by owner (flag08)
+		-./level08 token => "You may not access 'token'"
+			=> I have to rename the file, or give a path that will lead to this file without its name
+
+2)	[ebp+0x8] must not be equal to 1 in order for the program to continue.
+		if strstr (of what strings ?) returns null, we don't exit.
+			=> Needle must not be found in haystack in order to continue execution.
+		My understanding of the asm so far :
+			-x/s 0x8048793 == "token", must be a hard coded string in the main
+			-program name address (argv1) + 4 is the addres of argv2 imo => token
+
+3)	I must either :
+		-find a way to reference token file without naming it.
+			=> symlink not working.
+		-replace hardcoded needle "token" for another string.
+
+4)	looked on command injections in C, but asm code does not show any exploitable functions.
+5)	looked the acl of files / directories, seems not to be the answer
+
+6)	In the end, symlink was not working only because :
+		-level08 had read/write permissions in /var/lock (where I created the symlink)
+		-seems like flag08 must not have read permissions there.
+	=> Used /tmp, symlink worked like a charm...

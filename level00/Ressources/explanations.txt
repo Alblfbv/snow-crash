@@ -1,0 +1,22 @@
+
+----- LEVEL00 -----
+
+
+1)	first impressions
+		-there are no files in the home directory.
+		-video says "FIND this first file who can run only as flag00..."
+		-idea to search for a file owned by flag00 ?
+
+2)	find / -user flag00 2>/dev/null
+		-two files are found, same content : cdiiddwpgswtgt
+			=> /usr/bin/john
+			=> /rofs/usr/sbin/john
+
+3)	Video mentions john the ripper, file is named john.
+		=> john the ripper does not work on this.
+
+4)	Video mentions dcode.fr
+		-tried different crypto decodings, cesar code was the one
+			=> cdiiddwpgswtgt == nottoohardhere
+
+5)	used "nottoohardhere" as password for flag00

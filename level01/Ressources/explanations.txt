@@ -1,0 +1,18 @@
+
+----- LEVEL01 -----
+
+
+1)	first impressions :
+		-again, nothing in the home directory.
+		-tried the find / -user flag01 command again, no results.
+		-checked sudoers file access, no access.
+		-checked shadow file access, no access.
+
+2)	after reading on passwords that are stored in /etc/shadow, I saw that their encoding was specified in /etc/passwd.
+		=> cat /etc/passwd, and flag01 password was stored directly in this file ! (wtf ?)
+		=> password : 42hDRfypTqqnw
+
+3)	tried su flag01 with found password unsuccessfully.
+		=> tried on password on dcode unsuccessfully
+		=> then tried "john --show hashed_pwd"
+			=> it worked : 42hDRfypTqqnw == abcdefg
